@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Online JSON/Plist Converter(json2plist), JSON to Plist, Plist to JSON, 在线JSON/Plist转换工具，JSON转Plist, Plist转JSON</title>
+    <script src='http://cdn.staticfile.org/prototype/1.7.1.0/prototype.js'></script>
+    <script>
+        function convert()
+        {
+            var doaction = '';
+            var rb = document.getElementsByName("doaction");
+            var len = rb.length;
+            for(var i = 0; i < len;i ++)
+            {
+                if(rb[i].checked)
+                    doaction = rb[i].value;
+            }
+            
+            var myAjax = new Ajax.Request(
+                'convert.php',
+                {
+                    method: 'post', 
+                    parameters: 
+                    {
+                        'do':doaction,
+                        'content':$F('content')
+                    }, 
+                    onComplete: showResponse
+                }
+            );
+        }
+        function showResponse(originalRequest)
+        {
+            $('content').value = originalRequest.responseText;
+        }
+        function fillTry()
+        {
+            if($('radio_plist2json').checked==true)
+            {
+                $('content').value = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>employees</key><array><dict><key>firstName</key><string>Bill</string><key>lastName</key><string>Gates</string></dict><dict><key>firstName</key><string>George</string><key>lastName</key><string>Bush</string></dict><dict><key>firstName</key><string>Thomas</string><key>lastName</key><string>Carter</string></dict></array></dict></plist>';
+            }
+            else
+            {
+                $('content').value ='{"employees":[{"firstName":"Bill","lastName":"Gates"},{"firstName":"George","lastName":"Bush"},{"firstName":"Thomas","lastName":"Carter"}]}';
+            }
+        }
+    </script>
+</head>
+<body>
+    <div style="width:800px; margin-left:auto; margin-right:auto;">
+        <form>
+            <input type='radio' name='doaction' id='radio_json2plist' value='json2plist' checked /><label for='radio_json2plist'>JSON -> Plist</label>
+            <input type='radio' name='doaction' id='radio_plist2json' value='plist2json' /><label for='radio_plist2json'>Plist -> JSON</label>
+            <span style="float:right;"><a href="javascript:void(0)" onclick="fillTry()">Fill some data!</a></span>
+            <br />
+            <textarea id="content" name="content" style='width:800px; height:500px;'></textarea>
+            <br />
+            <input type='button' onclick='convert()' value='Convert' style="margin-top: 5px;"/>
+        </form>
+    </div>
+    <div style="width:800px; margin-left:auto; margin-right:auto; margin-top: 10px;">
+        <ul>
+            <li>This is a tool for converting data between PList and JSON format.</li>
+            <li>To try it out: click "Fill some data!" to get sample data.</li>
+            <li>To get result: put data in text area, select "JSON -> Plist" or "Plist -> JSON", then click "Convert".</li>
+        </ul>
+    </div>
+</body>
+</html>
